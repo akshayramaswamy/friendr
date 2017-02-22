@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <ScrollView
+        android:layout_width="107dp"
+        android:layout_height="307dp"
+        android:layout_weight="0.20">
+
+        <GridLayout
+            xmlns:tools="http://schemas.android.com/tools"
+
+            android:columnCount="1"
+            android:id="@+id/activity_view_users"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            tools:context="com.example.akshayramaswamy.cs193a_hw4_aramaswa.ViewUsersActivity">
+
+
+        </GridLayout>
+    </ScrollView>
+
+    <fragment
+        android:id="@+id/frag_details"
+        android:layout_gravity="center"
+        android:name="com.example.akshayramaswamy.cs193a_hw4_aramaswa.ProfileFragment"
+        tools:layout="@layout/fragment_profile"
+        android:layout_width="208dp"
+        android:layout_height="297dp"
+        android:layout_weight="0.95" />
+</LinearLayout>

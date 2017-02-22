@@ -2,6 +2,7 @@ package com.example.akshayramaswamy.cs193a_hw4_aramaswa;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -15,7 +16,7 @@ import stanford.androidlib.SimpleActivity;
 import stanford.androidlib.SimpleDialog;
 
 public class ViewUsersActivity extends SimpleActivity {
-    // array of all countries to display
+    // array of all friends to display
     private static String[] friendsImages;
 
     // instance initializer
@@ -25,9 +26,10 @@ public class ViewUsersActivity extends SimpleActivity {
 
     }
 
-    /*
+    /* Method: onCreate()
      * Called when the activity is created.
-     * Adds the various flag stamps to the screen.
+     * Adds the various images to the screen.
+     * Calls downloadImageNames using Ion library
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,11 @@ public class ViewUsersActivity extends SimpleActivity {
         downloadImageNames();
 
     }
+
+    /* Method: downloadImageNames()
+     * This method uses the Ion library to get the list of image names,
+     * then puts them into the friendsImages array
+     */
     private void downloadImageNames() {
         Ion.with(this)
                 .load("http://www.martystepp.com/friendr/friends/list")
@@ -43,37 +50,31 @@ public class ViewUsersActivity extends SimpleActivity {
                 .setCallback(new FutureCallback<String>() {
                     public void onCompleted(Exception e, String result) {
                         // code to process the result when done downloading
-                        // "abc.jpg \n xyz.jpg \n ..."
                         friendsImages = result.split("\n");
                         for (String name : friendsImages) {
                             addFriend(name);
                         }
-                        //SimpleList.with(PuppyActivity.this)
-                                //.setItems(R.id.puppy_spinner, allImages);
                     }
                 });
     }
-    /*
-     * This method adds a new copy of the flag widget described in flag.xml
-     * to the screen, with the given country name/image.
+
+    /* Method: addFriend()
+     * This method adds a new friend widget described in friends.xml
+     * to the screen, with the given friend name/image.
      */
     private void addFriend(final String friendName) {
         // inflate a copy of the flag.xml layout into actual Java widgets
         View friend = getLayoutInflater()
                 .inflate(R.layout.friends, /* parent */ null);
 
-        TextView tv = (TextView) friend.findViewById(R.id.friend_text);
+        TextView tv = (TextView) friend.findViewById(R.id.friend_left_text);
         tv.setText(friendName);
 
-        // this code is to convert a string like "United States" into
-        // an integer resource ID like R.drawable.unitedstates
+        // this code is to convert a string like Chandler into chandler
         final String friendName2 = friendName.replace(" ", "").toLowerCase();
-        //int flagImageID = getResources().getIdentifier(
-           //     countryName2, "drawable", getPackageName());
 
-        // listen for click events on the flag image button
-        ImageButton img = (ImageButton) friend.findViewById(R.id.friend_image);
-        //img.setImageResource(flagImageID);
+        // listen for click events on the friend image button
+        ImageButton img = (ImageButton) friend.findViewById(R.id.friend_left_image);
         String imageUrl = "http://www.martystepp.com/friendr/friends/" + friendName2 + ".jpg";
         Picasso.with(this)
                 .load(imageUrl)
@@ -84,59 +85,30 @@ public class ViewUsersActivity extends SimpleActivity {
             @Override
             public void onClick(View v)  {
 
-                //if (isPortrait()) {
-                  //  // jump to DetailsActivity
+                if (isPortrait()) {
+
                 ImageButton button = (ImageButton) v;
-                //String tag = button.getTag().toString();
                    startActivity(ProfileActivity.class, "friend_name", friendName2);
-                //}
-                //doTheDialog(friendName);
+                } else {
+                    // both fragments are in the same activity;
+                    // set the friend to be displayed on the right side
+                    ProfileFragment frag = (ProfileFragment) getFragmentManager().findFragmentById(R.id.frag_details);
+
+                    frag.setFriendName(friendName2);
+                    Log.d("friendcheck", friendName2);
+                }
             }
         });
 
-        // add the flag stamp to the screen
+        // add  to the screen
         GridLayout layout = (GridLayout) findViewById(R.id.activity_view_users);
-        layout.canScrollVertically(1);
         layout.addView(friend);
 
 
     }
 
 
-    private void doTheDialog(String countryName) {
-        // version without Stanford library
-//        AlertDialog.Builder builder = new AlertDialog.Builder(FlagsActivity.this);
-//        builder.setTitle("My Dialog");
-//        builder.setMessage("You clicked " + countryName);
-//        builder.setPositiveButton("OK",
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // code to run when OK is pressed
-//                        Toast.makeText(FlagsActivity.this, "You clicked OK",
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
 
-        // version with Stanford library
-        // pop up a simple alert dialog
-        SimpleDialog.with(this)
-                .showAlertDialog("You REALLY clicked " + countryName);
 
-        // pop up a dialog asking for input
-        SimpleDialog.with(this)
-                .showInputDialog("Type your name:", "Submit");
-    }
 
-    /*
-     * This method is called when the showInputDialog call above is finished.
-     * It "returns" the user's input to our code as the String input parameter below.
-     * This input parameter represents the text that the user typed into the dialog.
-     */
-    @Override
-    public void onInputDialogClose(AlertDialog dialog, String input) {
-        toast("You typed: " + input);
-    }
 }

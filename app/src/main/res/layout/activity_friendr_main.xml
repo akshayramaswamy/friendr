@@ -37,17 +37,7 @@
                 android:layout_height="wrap_content"
                 android:onClick="viewUsersClick" />
 
-            <Button
-                android:text="Swipe to Rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="swipeClick" />
 
-            <Button
-                android:text="Sign Up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="signUpClick" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
